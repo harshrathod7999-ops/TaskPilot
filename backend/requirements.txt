@@ -20,6 +20,6 @@ langfuse>=4.9.1
 ddgs>=9.14.4                     # DuckDuckGo web search (no API key)
 httpx>=0.28.1                    # URL fetching
 beautifulsoup4>=4.15.0           # HTML -> text extraction
-mcp>=1.28.1                      # Model Context Protocol SDK (custom server + client)
+mcp==1.29.0                      # Model Context Protocol SDK (custom server + client)
 
 python-dotenv>=1.0.1
