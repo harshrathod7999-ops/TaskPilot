@@ -1,0 +1,25 @@
+# TaskPilot backend RUNTIME deps. Pins are the verified floor (2026-06-22); newer is fine.
+fastapi>=0.138.0
+uvicorn[standard]>=0.49.0
+pydantic>=2.13.4
+pydantic-settings>=2.7.0
+
+# Agent orchestration
+langgraph>=1.2.6                 # state graph + checkpointer + human-in-the-loop interrupts
+langgraph-checkpoint-sqlite>=3.1.0  # durable checkpoints — a paused approval survives a restart
+
+# Shared LLM router
+litellm>=1.89.3
+google-genai>=2.9.0
+groq>=1.5.0
+
+# Observability
+langfuse>=4.9.1
+
+# Tools
+ddgs>=9.14.4                     # DuckDuckGo web search (no API key)
+httpx>=0.28.1                    # URL fetching
+beautifulsoup4>=4.15.0           # HTML -> text extraction
+mcp>=1.28.1                      # Model Context Protocol SDK (custom server + client)
+
+python-dotenv>=1.0.1

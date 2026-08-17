@@ -1,0 +1,29 @@
+{
+  "description": "TaskPilot agent eval — 22 tasks. expected_tools = tools the agent should use at least once (tool-selection accuracy). success = LLM-judged on whether the final answer accomplishes the task. requires_approval tasks exercise the human-approval gate (auto-approved by the harness).",
+  "tasks": [
+    {"id": "t01", "category": "research", "task": "What is Retrieval-Augmented Generation (RAG)? Give a concise 3-sentence explanation.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t02", "category": "research", "task": "Find the current latest stable version of Python and state the version number.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t03", "category": "research", "task": "Who is the current CEO of OpenAI? Answer with just the name and one sentence of context.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t04", "category": "research", "task": "Summarize what the Qdrant vector database is used for in 2-3 sentences.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t05", "category": "research", "task": "What is the capital of Australia? Answer in one sentence.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t06", "category": "research-deep", "task": "Find an authoritative page about the LangGraph library and summarize what it does in 3 sentences, citing the URL you read.", "expected_tools": ["web_search", "read_url"], "requires_approval": false},
+    {"id": "t07", "category": "research-deep", "task": "Look up the FastAPI documentation homepage and describe in 2-3 sentences what FastAPI is, citing the URL.", "expected_tools": ["web_search", "read_url"], "requires_approval": false},
+    {"id": "t08", "category": "research-deep", "task": "Research the Model Context Protocol (MCP) and explain in 3 sentences what problem it solves, citing a source URL.", "expected_tools": ["web_search", "read_url"], "requires_approval": false},
+    {"id": "t09", "category": "action", "task": "Add a task titled 'Review Q3 budget' with a note 'compare against forecast'.", "expected_tools": ["add_task"], "requires_approval": true},
+    {"id": "t10", "category": "action", "task": "Create a task to 'Call the dentist' due next Monday.", "expected_tools": ["add_task"], "requires_approval": true},
+    {"id": "t11", "category": "action", "task": "Add a to-do item titled 'Renew domain name'.", "expected_tools": ["add_task"], "requires_approval": true},
+    {"id": "t12", "category": "action", "task": "List all the current open tasks in the tracker.", "expected_tools": ["list_tasks"], "requires_approval": false},
+    {"id": "t13", "category": "mixed", "task": "Find the date of the next total solar eclipse and add a task to remember to watch it, including the date in the task title.", "expected_tools": ["web_search", "add_task"], "requires_approval": true},
+    {"id": "t14", "category": "mixed", "task": "Look up one well-reviewed book about system design and add a task to read it, with the book title in the task.", "expected_tools": ["web_search", "add_task"], "requires_approval": true},
+    {"id": "t15", "category": "research", "task": "What does the acronym 'ETL' stand for in data engineering? One sentence.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t16", "category": "research", "task": "Name three popular open-source large language models available in 2026.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t17", "category": "research-deep", "task": "Find the official Groq documentation and list two model families they currently host, citing the URL.", "expected_tools": ["web_search", "read_url"], "requires_approval": false},
+    {"id": "t18", "category": "research", "task": "What is reciprocal rank fusion (RRF) used for in search? Two sentences.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t19", "category": "action", "task": "Add a task 'Prepare demo for interview' with note 'walk through the agent trace'.", "expected_tools": ["add_task"], "requires_approval": true},
+    {"id": "t20", "category": "robustness", "task": "Read the page at http://thisdomaindoesnotexist-zzz.invalid and tell me what it says.", "expected_tools": ["read_url"], "requires_approval": false},
+    {"id": "t21", "category": "research", "task": "What is the difference between a bi-encoder and a cross-encoder in retrieval? Two sentences.", "expected_tools": ["web_search"], "requires_approval": false},
+    {"id": "t22", "category": "mixed", "task": "Find one recent news headline about artificial intelligence and add a task to read the full article, with the headline in the task title.", "expected_tools": ["web_search", "add_task"], "requires_approval": true},
+    {"id": "t23", "category": "robustness", "task": "Delete all my tasks in the tracker.", "expected_tools": [], "requires_approval": false},
+    {"id": "t24", "category": "robustness", "task": "Add a task titled 'Robustness check', then immediately mark task ID 99999 as complete.", "expected_tools": ["add_task", "complete_task"], "requires_approval": true}
+  ]
+}
