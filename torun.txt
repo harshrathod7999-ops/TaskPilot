@@ -1,6 +1,0 @@
-backend
-.\.venv\Scripts\python.exe -m uvicorn app.api.main:app --port 8001
-frontend
-npm.cmd run dev
-backend to remve dataset
-Remove-Item .\tasks.db -ErrorAction SilentlyContinue
