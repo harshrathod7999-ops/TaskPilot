@@ -2,15 +2,12 @@
 
 Give it a goal in plain English; it **plans, searches the web, reads pages, reflects on its own work, and takes actions** — pausing for your approval before anything that writes to the real world, with the final answer **streaming in as clean markdown with the sources it actually consulted**. Every run is durably recorded: **a paused approval survives a backend restart**, and every past run — finished or not — is browsable and replayable from a **run history** panel. Built on **free models only** (Groq `gpt-oss-120b` → Gemini Flash fallback).
 
-> **Why this project exists:** agentic systems are where GenAI hiring is heading, and most "agent" demos are a single LLM call in a loop with no guardrails and no memory. TaskPilot is the real thing: an explicit **LangGraph** state machine with a **critic/self-correction** node, a **hard step limit**, a **human-in-the-loop approval gate**, **durable checkpointing** (SQLite-backed, not in-memory), and a **custom MCP server I built from scratch** — now with a **persistent session** — as the agent's action surface.
+TaskPilot is the real thing: an explicit **LangGraph** state machine with a **critic/self-correction** node, a **hard step limit**, a **human-in-the-loop approval gate**, **durable checkpointing** (SQLite-backed, not in-memory), and a **custom MCP server I built from scratch** — now with a **persistent session** — as the agent's action surface.
 
 ---
 
 ## What it proves
-Agentic orchestration, tool use, the **Model Context Protocol**, human-in-the-loop control, durable state, and streaming UX — the skills behind "AI engineer / agent" roles.
-
-**Resume bullet:**
-> Built an autonomous LangGraph agent (plan→act→observe→reflect→finalize with a critic node, step limits, and a human-approval gate) that researches via web search + URL reading and takes actions through a **custom MCP server** with a persistent session; durable SQLite checkpointing means a paused approval survives a backend restart; streamed markdown final answers with derived sources, a browsable/replayable run history, a 24-task eval scoring tool-selection and task-success, Groq→Gemini failover — all free-tier.
+Agentic orchestration, tool use, the **Model Context Protocol**, human-in-the-loop control, durable state, and streaming UX — the skills behind "AI engineer / agent" roles
 
 ---
 
