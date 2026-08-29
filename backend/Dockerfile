@@ -1,7 +1,4 @@
-# TaskPilot backend — self-contained image (deploys to Render / HF Spaces, free tier).
-#
-# Build from THIS backend directory (everything it needs is vendored here):
-#   docker build -t taskpilot-api .
+
 #
 FROM python:3.11-slim
 
