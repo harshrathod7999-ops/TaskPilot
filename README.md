@@ -60,30 +60,6 @@ Instead of hard-coding tools into the agent, TaskPilot exposes a real **Model Co
 
 ---
 
-## Decisions & trade-offs
-
-- **LangGraph state machine over a free-form ReAct loop.** An explicit graph makes every step inspectable, streamable, resumable, and testable — and gives first-class human-in-the-loop via `interrupt()`/checkpointing. Cost: more wiring than "while True: call_llm()". Worth it for control and the live trace.
-- **Durable `AsyncSqliteSaver` over in-memory `MemorySaver`.** A paused approval used to vanish if the backend restarted. The checkpoint now lives in `agent.db`, so `/resume` works even after a full restart — verified live by pausing a run, killing the server, restarting it, and resuming successfully. Cost: a shared-SQLite-file lock-contention edge case (see hard parts) that needed a non-blocking-write + retry fix.
-- **Run history is server-side (`runs_store.py`), not client-side localStorage.** The backend already owns the authoritative event stream *and* the resumable checkpoint keyed by the same `thread_id` — a client-side history would desync from what's actually resumable the moment a paused run outlives the browser tab.
-- **Sources are derived from the scratchpad, not forced `[n]` citation markers.** The final answer is produced by whichever of three free-tier models is live, inside a strict-JSON decision protocol; layering a citation format on top of that would make weaker fallback models drop the JSON shape. A deterministic list of "pages actually read / queries actually run" is honest and can't hallucinate a source.
-- **A dedicated `finalize` node for streaming**, rather than streaming the reason node's answer directly. `reason`'s `final_answer` is one field inside a JSON object — unstreamable, and shaped by a strict-output prompt that fights natural prose. `finalize` re-renders the critic-accepted draft with one more call, this time using the real streaming API, falling back to the draft verbatim on any stream failure.
-- **Persistent MCP session over a fresh subprocess per call.** The original per-call spawn was simple but paid ~1-2s per tool call and — observed live while building this — could hang for 60+ seconds under load, which held the checkpoint write lock open and caused flaky `sqlite3` errors elsewhere. A supervisor-task-owned session removes both.
-- **Write-tool detection via MCP annotations, not a hardcoded name set.** `readOnlyHint` on each `@mcp.tool()` is the single source of truth; a tool with no annotation defaults to **write** (fail-safe — a new tool is gated by default, not silently exempt).
-- **Built the MCP server + client myself (no `langchain-mcp-adapters`).** The point is to *demonstrate* I understand MCP — the handshake, tool discovery, stdio transport, annotations — not hide it behind a wrapper.
-- **Approval emitted from the interrupt payload, not the node.** On resume, the approval node re-runs, so emitting the prompt inside it would duplicate it. The API emits `approval_required` from the interrupt payload exactly once per pause.
-- **Tools never raise into the agent.** Bad URLs, timeouts, rate limits, junk args all return a readable error *string* the agent treats as an observation and adapts to — robustness is the portfolio signal, not happy-path demos.
-- **Hard step limit + single critic pass.** Runaway loops and infinite self-critique are the classic agent failure modes; both are explicitly bounded.
-- **Groq primary → Gemini fallback** via the vendored [`shared/llm.py`](backend/shared/llm.py), so a Groq 429 mid-task doesn't kill the run.
-
-## Known limitations
-- Web search/reading hit the live internet, so research answers vary run to run (eval uses an LLM judge, not string matching).
-- SQLite task store is single-file/single-tenant; no auth on the API (add before any public deploy).
-- The agent does single-tool-per-step ReAct; parallel tool calls aren't used.
-- "Stop" works by disconnecting the SSE stream (the server-side generator is cancelled and the run is marked `stopped`) — there's no separate cancel endpoint, and any in-flight tool call still runs to completion server-side before the cancellation is observed.
-- Two SQLite writers share `agent.db` (the LangGraph checkpointer and the run-history recorder); under a very slow tool call this can occasionally still miss persisting a single trace event after retries — the live run is unaffected, only that one replay entry is missing.
-
----
-
 ## Evaluation
 
 A 24-task suite ([`backend/eval/dataset.json`](backend/eval/dataset.json)) spanning **research**, **deep research** (search → read), **action** (write, approval-gated), **mixed**, and **robustness** (bad URL, an impossible action with no matching tool, and a tool-error recovery case) tasks. It scores:
@@ -147,10 +123,7 @@ cd backend && python mcp_server/server.py    # speaks MCP over stdio (Ctrl-C to 
 
 **Durability demo, end to end:** start a write-action task → approve gate appears → **kill and restart `uvicorn`** → open the paused run from the **Runs** menu → click **Resume** → it completes exactly as if the server had never restarted.
 
-## Deploy (free tier)
-- **Backend** → Render / HF Spaces via [`backend/Dockerfile`](backend/Dockerfile) (`docker build -t taskpilot-api .` from `backend/`). The MCP server runs as a child process inside the same container. Mount a persistent volume for `agent.db`/`tasks.db` if the platform's filesystem doesn't survive restarts, or the durability story only holds within one container's lifetime.
-- **Frontend** → Vercel; set `VITE_API_BASE` to the backend URL; add the Vercel origin to `CORS_ORIGINS`.
-- **Tracing** → set `LANGFUSE_*` to trace the agent's LLM calls (latency, tokens, cost) in Langfuse; the full plan→act→observe→finalize trace also streams live in the UI and is persisted to run history.
+
 
 ## API
 | Method | Path | Purpose |
